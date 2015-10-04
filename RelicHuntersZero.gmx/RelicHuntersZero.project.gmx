@@ -3,8 +3,8 @@
   <Configs name="configs">
     <Config>Configs\Default</Config>
   </Configs>
-  <datafiles number="35" name="datafiles">
-    <datafiles number="35" name="fonts">
+  <datafiles number="46" name="datafiles">
+    <datafiles number="46" name="fonts">
       <datafile>
         <name>8-BIT WONDER.TTF</name>
         <exists>-1</exists>
@@ -94,7 +94,7 @@
     <datafile>
       <name>locSheet.csv</name>
       <exists>-1</exists>
-      <size>344014</size>
+      <size>414640</size>
       <exportAction>2</exportAction>
       <exportDir></exportDir>
       <overwrite>0</overwrite>
@@ -144,6 +144,7 @@
       </sounds>
       <sounds name="Menu">
         <sound>sound\sfx_roguesnail</sound>
+        <sound>sound\sfx_zueira</sound>
         <sound>sound\sfx_menu_click</sound>
         <sound>sound\sfx_menu_pause</sound>
         <sound>sound\sfx_menu_unpause</sound>
@@ -261,17 +262,13 @@
         <sound>sound\sfx_plasma_start</sound>
       </sounds>
       <sounds name="Dig">
-        <sound>sound\sfx_dirt1</sound>
-        <sound>sound\sfx_dirt2</sound>
-        <sound>sound\sfx_dirt3</sound>
-        <sound>sound\sfx_dirt4</sound>
-        <sound>sound\sfx_dirt5</sound>
         <sound>sound\sfx_shovel1</sound>
         <sound>sound\sfx_shovel2</sound>
         <sound>sound\sfx_shovel3</sound>
         <sound>sound\sfx_shovel4</sound>
         <sound>sound\sfx_detector_close</sound>
         <sound>sound\sfx_detector_far</sound>
+        <sound>sound\sfx_detector_mid</sound>
         <sound>sound\sfx_dig_done</sound>
       </sounds>
     </sounds>
@@ -317,6 +314,15 @@
         <sprite>sprites\spr_duck3_death2</sprite>
         <sprite>sprites\spr_duck3_death3</sprite>
         <sprite>sprites\spr_duck3_walk</sprite>
+      </sprites>
+      <sprites name="Ducan Elite">
+        <sprite>sprites\spr_ducanElite_idle</sprite>
+        <sprite>sprites\spr_ducanElite_walk</sprite>
+        <sprite>sprites\spr_ducanElite_dash</sprite>
+        <sprite>sprites\spr_ducanElite_hit</sprite>
+        <sprite>sprites\spr_ducanElite_death</sprite>
+        <sprite>sprites\spr_ducanElite_death2</sprite>
+        <sprite>sprites\spr_ducanElite_death3</sprite>
       </sprites>
       <sprites name="Kami_Kage">
         <sprite>sprites\spr_cage1</sprite>
@@ -389,6 +395,24 @@
         <sprite>sprites\spr_boss_egg_crack</sprite>
         <sprite>sprites\spr_boss_egg_idle</sprite>
       </sprites>
+      <sprites name="Ghost Ducan">
+        <sprite>sprites\spr_ghost_idle</sprite>
+        <sprite>sprites\spr_ghost_facing</sprite>
+        <sprite>sprites\spr_ghost_walking</sprite>
+      </sprites>
+      <sprites name="Worm">
+        <sprite>sprites\spr_worm_idle</sprite>
+        <sprite>sprites\spr_worm_walk</sprite>
+        <sprite>sprites\spr_worm_death1</sprite>
+        <sprite>sprites\spr_worm_death2</sprite>
+        <sprite>sprites\spr_worm_spawn</sprite>
+      </sprites>
+      <sprites name="Zombie Turtle">
+        <sprite>sprites\spr_zombieTurtle_idle</sprite>
+        <sprite>sprites\spr_zombieTurtle_hit</sprite>
+        <sprite>sprites\spr_zombieTurtle_death</sprite>
+        <sprite>sprites\spr_zombieTurtle_rise</sprite>
+      </sprites>
     </sprites>
     <sprites name="Environment">
       <sprites name="Base">
@@ -401,6 +425,7 @@
         <sprite>sprites\spr_wall_stage2</sprite>
         <sprite>sprites\spr_wall_stage3</sprite>
         <sprite>sprites\spr_wall_stage4</sprite>
+        <sprite>sprites\spr_wallHalloween</sprite>
         <sprite>sprites\spr_wall_stage1_static</sprite>
         <sprite>sprites\spr_wall_stage2_static</sprite>
         <sprite>sprites\spr_wall_stage3_static</sprite>
@@ -417,71 +442,104 @@
         <sprite>sprites\spr_tp_stage4</sprite>
       </sprites>
       <sprites name="Blockers">
-        <sprite>sprites\spr_barrel</sprite>
-        <sprite>sprites\spr_barrel_hit</sprite>
-        <sprite>sprites\spr_barrel_reflection</sprite>
-        <sprite>sprites\spr_barrel_break</sprite>
-        <sprite>sprites\spr_barrel_break2</sprite>
-        <sprite>sprites\spr_longbox_reflection</sprite>
-        <sprite>sprites\spr_longbox_hit</sprite>
-        <sprite>sprites\spr_longbox_dirt</sprite>
-        <sprite>sprites\spr_root4_hit</sprite>
-        <sprite>sprites\spr_root4</sprite>
-        <sprite>sprites\spr_root4_break</sprite>
-        <sprite>sprites\spr_root3_hit</sprite>
-        <sprite>sprites\spr_root3</sprite>
-        <sprite>sprites\spr_root3_break</sprite>
-        <sprite>sprites\spr_root2_hit</sprite>
-        <sprite>sprites\spr_root2</sprite>
-        <sprite>sprites\spr_root2_break</sprite>
-        <sprite>sprites\spr_root1_hit</sprite>
-        <sprite>sprites\spr_root1</sprite>
-        <sprite>sprites\spr_root1_break</sprite>
-        <sprite>sprites\spr_longbox</sprite>
-        <sprite>sprites\spr_longbox_break</sprite>
-        <sprite>sprites\spr_longbox_break2</sprite>
-        <sprite>sprites\spr_crate_reflection</sprite>
-        <sprite>sprites\spr_crate_hit</sprite>
-        <sprite>sprites\spr_crate_dirt</sprite>
-        <sprite>sprites\spr_crate</sprite>
-        <sprite>sprites\spr_generator</sprite>
-        <sprite>sprites\spr_generatorOff</sprite>
-        <sprite>sprites\spr_generatorActivation</sprite>
-        <sprite>sprites\spr_generator_hit</sprite>
-        <sprite>sprites\spr_crate_break</sprite>
-        <sprite>sprites\spr_crate_break2</sprite>
         <sprites name="Blocker FX">
           <sprite>sprites\spr_crate_particles</sprite>
         </sprites>
+        <sprite>sprites\spr_barrel</sprite>
+        <sprite>sprites\spr_barrel_break</sprite>
+        <sprite>sprites\spr_barrel_break2</sprite>
+        <sprite>sprites\spr_barrel_hit</sprite>
+        <sprite>sprites\spr_barrel_reflection</sprite>
+        <sprite>sprites\spr_barrelDucan</sprite>
+        <sprite>sprites\spr_barrelDucan_break</sprite>
+        <sprite>sprites\spr_barrelDucan_hit</sprite>
+        <sprite>sprites\spr_barrelDucan_reflection</sprite>
+        <sprite>sprites\spr_crate</sprite>
+        <sprite>sprites\spr_crate_break</sprite>
+        <sprite>sprites\spr_crate_break2</sprite>
+        <sprite>sprites\spr_crate_dirt</sprite>
+        <sprite>sprites\spr_crate_hit</sprite>
+        <sprite>sprites\spr_crate_reflection</sprite>
+        <sprite>sprites\spr_crateDucan</sprite>
+        <sprite>sprites\spr_crateDucan_hit</sprite>
+        <sprite>sprites\spr_crateDucan_reflection</sprite>
+        <sprite>sprites\spr_eliteFlag_break</sprite>
+        <sprite>sprites\spr_eliteFlag_idle</sprite>
+        <sprite>sprites\spr_generator</sprite>
+        <sprite>sprites\spr_generator_hit</sprite>
+        <sprite>sprites\spr_generatorActivation</sprite>
+        <sprite>sprites\spr_generatorOff</sprite>
+        <sprite>sprites\spr_longbox</sprite>
+        <sprite>sprites\spr_longbox_break</sprite>
+        <sprite>sprites\spr_longbox_break2</sprite>
+        <sprite>sprites\spr_longbox_dirt</sprite>
+        <sprite>sprites\spr_longbox_hit</sprite>
+        <sprite>sprites\spr_longbox_reflection</sprite>
+        <sprite>sprites\spr_longboxDucan</sprite>
+        <sprite>sprites\spr_longboxDucan_break</sprite>
+        <sprite>sprites\spr_longboxDucan_hit</sprite>
+        <sprite>sprites\spr_longboxDucan_reflection</sprite>
+        <sprite>sprites\spr_pumpkin</sprite>
+        <sprite>sprites\spr_pumpkin_break</sprite>
+        <sprite>sprites\spr_pumpkin_hit</sprite>
         <sprite>sprites\spr_redbarrel</sprite>
-        <sprite>sprites\spr_redbarrel_spawner</sprite>
-        <sprite>sprites\spr_redbarrel_reflection</sprite>
         <sprite>sprites\spr_redbarrel_hit</sprite>
+        <sprite>sprites\spr_redbarrel_reflection</sprite>
+        <sprite>sprites\spr_redbarrel_spawner</sprite>
+        <sprite>sprites\spr_root1</sprite>
+        <sprite>sprites\spr_root1_break</sprite>
+        <sprite>sprites\spr_root1_hit</sprite>
+        <sprite>sprites\spr_root2</sprite>
+        <sprite>sprites\spr_root2_break</sprite>
+        <sprite>sprites\spr_root2_hit</sprite>
+        <sprite>sprites\spr_root3</sprite>
+        <sprite>sprites\spr_root3_break</sprite>
+        <sprite>sprites\spr_root3_hit</sprite>
+        <sprite>sprites\spr_root4</sprite>
+        <sprite>sprites\spr_root4_break</sprite>
+        <sprite>sprites\spr_root4_hit</sprite>
       </sprites>
-      <sprite>sprites\spr_shop</sprite>
-      <sprite>sprites\spr_shop2</sprite>
       <sprites name="Altars">
         <sprite>sprites\spr_altar_players</sprite>
         <sprite>sprites\spr_altar_relics</sprite>
         <sprite>sprites\spr_altar_relic_light</sprite>
       </sprites>
+      <sprites name="Traps">
+        <sprite>sprites\spr_spikeTrap</sprite>
+      </sprites>
+      <sprites name="Shop">
+        <sprite>sprites\spr_shop</sprite>
+        <sprite>sprites\spr_shop2</sprite>
+        <sprite>sprites\spr_terminal</sprite>
+        <sprite>sprites\spr_terminalChallengeCommon</sprite>
+        <sprite>sprites\spr_terminalChallengeUnique</sprite>
+        <sprite>sprites\spr_terminalClear</sprite>
+        <sprite>sprites\spr_resetButton</sprite>
+        <sprite>sprites\spr_resetButton_press</sprite>
+      </sprites>
       <sprite>sprites\spr_exitArrow</sprite>
     </sprites>
     <sprites name="Grenades">
       <sprite>sprites\spr_grenade_exp1</sprite>
+      <sprite>sprites\spr_grenade_expRider</sprite>
       <sprite>sprites\spr_grenade_glow</sprite>
       <sprite>sprites\spr_explosion_ground</sprite>
       <sprite>sprites\spr_grenadeNew</sprite>
+      <sprite>sprites\spr_grenadeRider</sprite>
       <sprite>sprites\spr_grenadeTarget</sprite>
     </sprites>
     <sprites name="Guns">
       <sprite>sprites\spr_assault_rifle</sprite>
-      <sprite>sprites\spr_rifle_relic</sprite>
       <sprite>sprites\spr_assault_rifle_crude</sprite>
       <sprite>sprites\spr_boss_gun</sprite>
+      <sprite>sprites\spr_bouncer</sprite>
+      <sprite>sprites\spr_ducan_plasma</sprite>
+      <sprite>sprites\spr_ducan_rifle</sprite>
+      <sprite>sprites\spr_ducan_rocketLauncher</sprite>
+      <sprite>sprites\spr_ducan_shotgun</sprite>
+      <sprite>sprites\spr_ducan_sniper</sprite>
       <sprite>sprites\spr_flamethrower</sprite>
       <sprite>sprites\spr_highmag</sprite>
-      <sprite>sprites\spr_bouncer</sprite>
       <sprite>sprites\spr_keytar</sprite>
       <sprite>sprites\spr_machinegun</sprite>
       <sprite>sprites\spr_pistol</sprite>
@@ -491,19 +549,20 @@
       <sprite>sprites\spr_pistol_jimmy</sprite>
       <sprite>sprites\spr_pistol_plasma</sprite>
       <sprite>sprites\spr_pistol_relic</sprite>
+      <sprite>sprites\spr_rifle_relic</sprite>
       <sprite>sprites\spr_rocketlauncher</sprite>
       <sprite>sprites\spr_rocketlauncher_relic</sprite>
       <sprite>sprites\spr_sawedoff</sprite>
       <sprite>sprites\spr_shotgun</sprite>
-      <sprite>sprites\spr_shotgun_relic</sprite>
       <sprite>sprites\spr_shotgun_crude</sprite>
       <sprite>sprites\spr_shotgun_heavy</sprite>
+      <sprite>sprites\spr_shotgun_relic</sprite>
       <sprite>sprites\spr_smg_crude</sprite>
       <sprite>sprites\spr_smg_plasma</sprite>
       <sprite>sprites\spr_smg_relic</sprite>
-      <sprite>sprites\spr_sniper_rifle</sprite>
-      <sprite>sprites\spr_sniper_relic</sprite>
       <sprite>sprites\spr_sniper_ghost</sprite>
+      <sprite>sprites\spr_sniper_relic</sprite>
+      <sprite>sprites\spr_sniper_rifle</sprite>
       <sprite>sprites\spr_submachinegun</sprite>
     </sprites>
     <sprites name="Bullets&amp;Effects">
@@ -524,6 +583,7 @@
       <sprite>sprites\spr_digPile</sprite>
       <sprite>sprites\spr_dirt_bits</sprite>
       <sprite>sprites\spr_fx_digItem</sprite>
+      <sprite>sprites\spr_bullet_plasma</sprite>
       <sprite>sprites\spr_fx_weaponGround</sprite>
       <sprites name="Broken">
         <sprite>sprites\spr_broken_pistol</sprite>
@@ -541,7 +601,6 @@
         <sprite>sprites\spr_broken_highmag</sprite>
         <sprite>sprites\spr_broken_keytar</sprite>
       </sprites>
-      <sprite>sprites\spr_bullet_plasma</sprite>
     </sprites>
     <sprites name="HUD">
       <sprite>sprites\spr_crosshair_reload</sprite>
@@ -592,10 +651,12 @@
       <sprite>sprites\spr_priceTag</sprite>
       <sprite>sprites\spr_challengeCommon</sprite>
       <sprite>sprites\spr_challengeUnique</sprite>
+      <sprite>sprites\spr_edgeTrackEnemy</sprite>
     </sprites>
     <sprites name="Items">
       <sprite>sprites\spr_pickup_health</sprite>
       <sprite>sprites\spr_pickup_shield</sprite>
+      <sprite>sprites\spr_pickup_supershield</sprite>
       <sprite>sprites\spr_pickup_healthBig</sprite>
       <sprite>sprites\spr_pickup_light</sprite>
       <sprite>sprites\spr_pickup_medium</sprite>
@@ -603,6 +664,8 @@
       <sprite>sprites\spr_pickup_grenade</sprite>
       <sprite>sprites\spr_coin_drop</sprite>
       <sprite>sprites\spr_coin_ground</sprite>
+      <sprite>sprites\spr_chest_idle</sprite>
+      <sprite>sprites\spr_chest_open</sprite>
     </sprites>
     <sprites name="Player">
       <sprites name="Ass">
@@ -715,9 +778,11 @@
         <sprite>sprites\spr_rider_dash_fx</sprite>
         <sprite>sprites\spr_rider_walk</sprite>
         <sprite>sprites\spr_rider_melee</sprite>
+        <sprite>sprites\spr_rider_dig</sprite>
         <sprite>sprites\spr_rider_teleport_out</sprite>
         <sprite>sprites\spr_rider_teleport_in</sprite>
         <sprite>sprites\spr_rider_holo</sprite>
+        <sprite>sprites\spr_rider_death</sprite>
       </sprites>
       <sprite>sprites\spr_melee</sprite>
       <sprite>sprites\spr_melee_gloves</sprite>
@@ -734,6 +799,7 @@
       <sprite>sprites\spr_shield_down</sprite>
       <sprite>sprites\spr_shield_down_blue</sprite>
       <sprite>sprites\spr_shield_blue</sprite>
+      <sprite>sprites\spr_supershield</sprite>
       <sprite>sprites\spr_shield_biu</sprite>
       <sprite>sprites\spr_shield_boss</sprite>
       <sprite>sprites\spr_shield_up_blue</sprite>
@@ -871,6 +937,9 @@
         <sprite>sprites\spr_card_punny</sprite>
         <sprite>sprites\spr_card_raff</sprite>
       </sprites>
+      <sprites name="Splash">
+        <sprite>sprites\spr_zueiraVinheta</sprite>
+      </sprites>
     </sprites>
   </sprites>
   <backgrounds name="background">
@@ -907,6 +976,10 @@
       <background>background\bg_menu_settings</background>
       <background>background\bg_menu_nested</background>
       <background>background\bg_menu_tile</background>
+    </backgrounds>
+    <backgrounds name="Stage Halloween">
+      <background>background\tileset_halloween</background>
+      <background>background\floor_halloween</background>
     </backgrounds>
   </backgrounds>
   <paths name="paths"/>
@@ -1007,6 +1080,7 @@
       <scripts name="General">
         <script>scripts\range_finder.gml</script>
         <script>scripts\on_screen.gml</script>
+        <script>scripts\on_screen_offset.gml</script>
         <script>scripts\range_convert.gml</script>
         <script>scripts\is_mouse_over.gml</script>
         <script>scripts\is_mouse_over_custom.gml</script>
@@ -1062,6 +1136,7 @@
     <scripts name="Input Customization">
       <scripts name="Keyboard &amp; Mouse">
         <script>scripts\input_key_aim.gml</script>
+        <script>scripts\input_key_aim_pressed.gml</script>
         <script>scripts\input_key_down.gml</script>
         <script>scripts\input_key_down_pressed.gml</script>
         <script>scripts\input_key_down_released.gml</script>
@@ -1169,11 +1244,13 @@
   </fonts>
   <objects name="objects">
     <objects name="Controllers">
+      <object>objects\controller_bootstrap</object>
       <object>objects\controller_main</object>
       <object>objects\controller_pause</object>
       <object>objects\controller_camera</object>
       <object>objects\controller_effects</object>
       <object>objects\controller_splash</object>
+      <object>objects\controller_splashZueira</object>
       <object>objects\controller_shadow_tall</object>
       <object>objects\controller_menu_main</object>
       <object>objects\controller_menu_background</object>
@@ -1190,10 +1267,13 @@
       <object>objects\data_shopEndless</object>
       <object>objects\data_enemiesEndless</object>
       <object>objects\data_itemsEndless</object>
+      <object>objects\data_chestItems</object>
     </objects>
     <objects name="Player">
       <object>objects\faction_player</object>
       <object>objects\class_player</object>
+      <object>objects\class_weapon</object>
+      <object>objects\class_melee</object>
       <object>objects\class_gun</object>
       <object>objects\fx_corpse_player</object>
       <object>objects\obj_jimmy</object>
@@ -1203,12 +1283,11 @@
       <object>objects\obj_biu</object>
       <object>objects\obj_punny</object>
       <object>objects\obj_assPlayer</object>
-      <object>objects\obj_gloves</object>
-      <object>objects\obj_shield_biu</object>
-      <object>objects\obj_buckler</object>
       <object>objects\fx_melee_arc</object>
+      <object>objects\obj_shield_biu</object>
       <objects name="Guns">
         <object>objects\obj_assault_rifle</object>
+        <object>objects\obj_ducanRifle</object>
         <object>objects\obj_assault_rifle_crude</object>
         <object>objects\obj_bossGun</object>
         <object>objects\obj_flamethrower</object>
@@ -1239,6 +1318,10 @@
         <object>objects\obj_sniper_ghost</object>
         <object>objects\obj_submachinegun</object>
       </objects>
+      <objects name="Melee Weapons">
+        <object>objects\obj_gloves</object>
+        <object>objects\obj_buckler</object>
+      </objects>
     </objects>
     <objects name="Enemies">
       <objects name="Factions">
@@ -1262,6 +1345,7 @@
           <object>objects\obj_turtle2_assaultpistol</object>
           <object>objects\obj_turtle2_shotgun</object>
           <object>objects\obj_turtle3</object>
+          <object>objects\obj_turtle3_plasma</object>
           <object>objects\obj_turtle3_sniper</object>
         </objects>
         <objects name="Kamis">
@@ -1274,17 +1358,33 @@
           <object>objects\obj_boss</object>
           <object>objects\obj_boss_spawner</object>
         </objects>
+        <objects name="Spooky">
+          <object>objects\obj_ghost_ducan</object>
+        </objects>
+        <objects name="Ducan Elite">
+          <object>objects\obj_ducanElite_rifle</object>
+          <object>objects\obj_ducanElite_shotgun</object>
+          <object>objects\obj_ducanElite_sniper</object>
+          <object>objects\obj_ducanElite_rocket</object>
+          <object>objects\obj_ducanElite_plasma</object>
+        </objects>
       </objects>
       <objects name="Guns">
         <object>objects\obj_pistol_enemy</object>
+        <object>objects\obj_pistol_plasma_enemy</object>
+        <object>objects\obj_ducanPlasma_enemy</object>
         <object>objects\obj_pistol_heavy_enemy</object>
         <object>objects\obj_submachinegun_enemy</object>
         <object>objects\obj_machinegun_enemy</object>
         <object>objects\obj_assaultpistol_enemy</object>
         <object>objects\obj_assaultrifle_enemy</object>
+        <object>objects\obj_ducanRifle_enemy</object>
         <object>objects\obj_shotgun_enemy</object>
+        <object>objects\obj_ducanShotgun_enemy</object>
         <object>objects\obj_sniperrifle_enemy</object>
+        <object>objects\obj_ducanSniper_enemy</object>
         <object>objects\obj_rocketlauncher_enemy</object>
+        <object>objects\obj_ducanRocket_enemy</object>
         <object>objects\obj_assaultrifle_boss</object>
         <object>objects\obj_rocketlauncher_boss</object>
       </objects>
@@ -1325,6 +1425,7 @@
         <object>objects\obj_wall_stage2</object>
         <object>objects\obj_wall_stage3</object>
         <object>objects\obj_wall_stage4</object>
+        <object>objects\obj_wall_halloween</object>
         <object>objects\obj_bigwindow</object>
       </objects>
       <objects name="Blockers">
@@ -1336,6 +1437,7 @@
         <object>objects\obj_redbarrel_spawner</object>
         <object>objects\obj_redbarrel</object>
         <object>objects\obj_crate</object>
+        <object>objects\obj_pumpkin</object>
         <object>objects\class_generator</object>
         <object>objects\obj_wonderwall1</object>
         <object>objects\obj_wonderwall2</object>
@@ -1358,9 +1460,12 @@
         <object>objects\obj_swap_biu</object>
         <object>objects\obj_swap_punny</object>
         <object>objects\obj_swap_ass</object>
+        <object>objects\obj_endlessUnlock</object>
         <object>objects\class_balloon</object>
         <object>objects\obj_ass_balloon</object>
         <object>objects\obj_gunnar_balloon</object>
+        <object>objects\obj_endless_balloon</object>
+        <object>objects\obj_sae_balloon</object>
         <object>objects\obj_ass</object>
         <object>objects\obj_shop</object>
         <object>objects\obj_shop2</object>
@@ -1374,6 +1479,7 @@
         <object>objects\obj_digSpot</object>
         <object>objects\fx_detector</object>
       </objects>
+      <object>objects\obj_spikeTrap</object>
     </objects>
     <objects name="FX">
       <objects name="Shield">
@@ -1388,6 +1494,7 @@
         <object>objects\fx_corpse</object>
         <object>objects\fx_corpse_boss</object>
       </objects>
+      <object>objects\fx_superShield</object>
       <object>objects\class_bouncer</object>
       <object>objects\fx_activation</object>
       <object>objects\fx_blood</object>
@@ -1396,6 +1503,7 @@
       <object>objects\class_fx_boxbreak</object>
       <object>objects\fx_longbox_break</object>
       <object>objects\fx_crate_break</object>
+      <object>objects\fx_pumpkin_break</object>
       <object>objects\fx_barrel_break</object>
       <object>objects\fx_roots_break</object>
       <object>objects\fx_crate_particles</object>
@@ -1412,13 +1520,17 @@
       <object>objects\fx_bigMessage</object>
       <object>objects\fx_digItem</object>
       <object>objects\fx_exitArrow</object>
+      <object>objects\fx_explosionKami</object>
       <object>objects\fx_kami_cageDestroy</object>
+      <object>objects\fx_ducanFlag</object>
     </objects>
     <objects name="Grenades">
       <object>objects\fx_explosion_regular</object>
+      <object>objects\fx_explosion_shield</object>
       <object>objects\class_grenadeNew</object>
       <object>objects\obj_grenadeNew</object>
       <object>objects\obj_grenadeKami</object>
+      <object>objects\obj_grenadeSuperShield</object>
       <object>objects\obj_grenade_enemyNew</object>
       <object>objects\fx_grenadeTarget</object>
     </objects>
@@ -1439,6 +1551,7 @@
       <object>objects\gui_info</object>
       <object>objects\gui_logo</object>
       <object>objects\fx_prompt_e</object>
+      <object>objects\fx_info_pickup</object>
       <object>objects\gui_intro_text</object>
       <object>objects\gui_credits_text</object>
       <object>objects\gui_weaponInfo</object>
@@ -1483,6 +1596,7 @@
         <object>objects\menu_fx_pause</object>
         <object>objects\menu_fx_mapping</object>
         <object>objects\menu_fx_rogue</object>
+        <object>objects\splash_fx_zueira</object>
         <object>objects\menu_fx_forums</object>
         <object>objects\menu_fx_opensource</object>
         <object>objects\menu_fx_twitter</object>
@@ -1583,9 +1697,11 @@
       <object>objects\class_pickup_ammo</object>
       <object>objects\class_pickup_health</object>
       <object>objects\class_pickup_shield</object>
+      <object>objects\class_pickup_superShield</object>
       <object>objects\obj_pickup_coin</object>
       <object>objects\obj_pickup_health</object>
       <object>objects\obj_pickup_shield</object>
+      <object>objects\obj_pickup_superShield</object>
       <object>objects\obj_pickup_healthBig</object>
       <object>objects\obj_pickup_lightammo</object>
       <object>objects\obj_pickup_mediumammo</object>
@@ -1614,6 +1730,7 @@
       <object>objects\obj_pickup_sniper_relic</object>
       <object>objects\obj_pickup_sniper_ghost</object>
       <object>objects\obj_pickup_assault_rifle</object>
+      <object>objects\obj_pickup_ducan_rifle</object>
       <object>objects\obj_pickup_rifle_relic</object>
       <object>objects\obj_pickup_assault_rifle_crude</object>
       <object>objects\obj_pickup_submachinegun</object>
@@ -1635,6 +1752,7 @@
       <object>objects\obj_sonicboom</object>
       <object>objects\obj_projectile_enemy</object>
       <object>objects\obj_projectile_plasma</object>
+      <object>objects\obj_projectile_plasmaEnemy</object>
     </objects>
     <objects name="Tutorial">
       <object>objects\class_tutorial_animated</object>
@@ -1715,6 +1833,7 @@
     <objects name="Relics">
       <object>objects\class_relic</object>
       <object>objects\class_shop_relic</object>
+      <object>objects\obj_relicReset</object>
       <objects name="Relic_Shop">
         <object>objects\obj_shop_pineapple1</object>
         <object>objects\obj_shop_pineapple2</object>
@@ -1781,7 +1900,13 @@
     </objects>
     <objects name="Endless Shop">
       <objects name="Classes and Slots">
+        <object>objects\obj_revival_hologram</object>
+        <object>objects\obj_sae</object>
         <object>objects\obj_gunnar</object>
+        <object>objects\class_hack</object>
+        <object>objects\obj_hackTerminal1</object>
+        <object>objects\obj_hackTerminal2</object>
+        <object>objects\obj_shopReset</object>
         <object>objects\class_endshop_tiered</object>
         <object>objects\class_endShop_weapon</object>
         <object>objects\class_endShop_relic</object>
@@ -1841,8 +1966,15 @@
         <object>objects\obj_endShop_yottabyteProcessor</object>
       </objects>
     </objects>
+    <objects name="Endless Dig">
+      <object>objects\class_treasureChest</object>
+      <object>objects\obj_chestRegular</object>
+      <object>objects\fx_chestRegular</object>
+    </objects>
   </objects>
   <rooms name="rooms">
+    <room>rooms\room_bootstrap</room>
+    <room>rooms\room_splashZueira</room>
     <room>rooms\room_splash</room>
     <room>rooms\room_intro</room>
     <room>rooms\room_menu</room>
@@ -1866,6 +1998,7 @@
     <room>rooms\level4_1</room>
     <room>rooms\level4_2</room>
     <room>rooms\level4_3</room>
+    <room>rooms\levelHalloween_1</room>
     <room>rooms\room_boss</room>
     <room>rooms\room_shop</room>
     <room>rooms\room_endShop</room>

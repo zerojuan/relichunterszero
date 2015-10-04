@@ -25,7 +25,7 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Main Shit
+            <string>///Setup
 
 myPlayerId = 1;
 playerName = "NONAME";
@@ -43,6 +43,7 @@ alarm[0] = room_speed*2;
 energy_max = 100;
 energy = energy_max;
 overshield = 0;
+superShield = false;
 
 hp_max = 100;
 hp = hp_max;
@@ -145,7 +146,7 @@ energy_regen_time = room_speed*5;
 energy_regen_time_regular = energy_regen_time;
 energy_regen_time_relic = round(energy_regen_time/2);
 
-energy_regen_time_current = 0;
+energy_regen_time_current = energy_regen_time;
 energy_regen_speed = 1;
 
 shield_fading = false;
@@ -153,6 +154,10 @@ shield_alpha = 0;
 shield_alpha_speed = 0;
 shield_alpha_accel = 0.2;
 shield_alpha_speed_max = 2;
+
+superShieldTime = 0;
+superShieldTimeCurrent = 0;
+mySuperShieldFx = noone;
 
 //Biu's Shield
 inputShield = false;
@@ -244,13 +249,16 @@ joyCrosshairDistanceMin = 40;
 joyCrosshairSpeed = 24;
 
 //Relics and Challenges
-staminaRegenUpdated = false;
+staminaChallengeUpdated = false;
+staminaRelicUpdated = false;
 energyRegenUpdated = false;
 
 hpPuddingUpdated = false;
 hpPieUpdated = false;
 energyDriveUpdated = false;
 energyProcessorUpdated = false;
+
+receivedCrystalBaconHealing = false;
 
 //Special Character Stuff
 riderGrenadeCost = 0;
@@ -500,14 +508,23 @@ if (inputLocked) {
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Relic Buffs, Challenges &amp; First Room Invulnerability
+            <string>///Relic Buffs, Challenges, Invulnerability, Achievements
 
 //Invulnerable in first room
 if (room == room_start) hp = hp_max;
 
 // Relics
-if (global.relic_alcoholic_carrot == 2) stamina_regen = stamina_regen_relic;
-else stamina_regen = stamina_regen_regular;
+if (!staminaRelicUpdated){
+    if (global.relic_alcoholic_carrot == 2) stamina_regen = stamina_regen_relic;
+    else stamina_regen = stamina_regen_regular;
+    
+    staminaRelicUpdated = true;
+}
+
+staminaChallengeUpdated = false;
+staminaRelicUpdated = false;
+
+
 
 if (global.relic_infinity_battery == 2) energy_regen_time = energy_regen_time_relic;
 else energy_regen_time = energy_regen_time_regular;
@@ -533,9 +550,24 @@ if (global.relic_yottabyte_processor == 2) &amp;&amp; (!energyProcessorUpdated){
     energyProcessorUpdated = true;
 }
 
+//Crystal Bacon on Level End
+if (global.relic_crystal_bacon ==2) &amp;&amp; (instance_exists(controller_main)){
+    if (controller_main.level_end) &amp;&amp; (!receivedCrystalBaconHealing){
+        hp += min(hp_max*0.2, hp_max-hp);
+                
+        audio_play(audio_emitter,false,1,sfx_pickup_health);
+                
+        guiInfo = instance_create(x,y,gui_info);
+        guiInfo.colorMain = c_white;
+        guiInfo.myString = loc_key("INFO_HEALTHPLUS");
+        guiInfo.owner = id;
+        
+        receivedCrystalBaconHealing = true;
+    }
+}
+
 //Watchful Eye: See controller_main;
 //Midnight Beer and Midnight Meal: See projectile_player and melee_arc
-//Crystal Bacon: See fx_corpse
 //Dev Potion: See class_gun
 //Morning Star: See coin pickup
 //The Rabbit Foot: You won't find out what it does here :)
@@ -546,9 +578,16 @@ if (global.challengeMedieval) &amp;&amp; (!meleeDamageUpdated) {
     meleeDamageUpdated = true;
 }
 
-if (global.challengeHeavyBurden) &amp;&amp; (!staminaRegenUpdated) {
+if (global.challengeHeavyBurden) &amp;&amp; (!staminaChallengeUpdated) {
     stamina_regen -= stamina_regen * global.challengeHeavyBurdenPenalty;
-    staminaRegenUpdated = true;
+    staminaChallengeUpdated = true;
+}
+
+//Achievements
+if (global.gameMode == gamemode_endless) {
+    if (instance_exists(weapon1)) &amp;&amp; (instance_exists(weapon2)){
+        if (weapon1.isRelicWeapon) &amp;&amp; (weapon2.isRelicWeapon) achievement_give("ACHIEVEMENT_RELICWEAPONS");    
+    }
 }
 </string>
           </argument>
@@ -807,7 +846,7 @@ if (allowMovement)
     if (melee) &amp;&amp; (animation_current = 'melee') &amp;&amp;(animation_index = melee_hit_frame)
     {
         speed = melee_step_speed;
-        if (myGun == obj_gloves) speed = melee_step_speed_gloves;
+        if (instance_exists(myGun)) if (myGun.isMeleeWeapon) speed = myGun.meleeStepSpeed;
         direction = point_direction(x,y,global.crosshairX[myPlayerId],global.crosshairY[myPlayerId]);
         melee_dash = true;
         
@@ -927,6 +966,7 @@ if (hit_taken)
         shield_effect = instance_create(x,y,fx_shield);
         shield_effect.owner = id;
         hit_taken = false;
+        if (superShield) shield_effect.sprite_index = spr_supershield;
     }
     else
     {
@@ -1003,7 +1043,7 @@ animation_update_player();
             <string>///Melee Attack + Biu's Shield
 
 var input_melee = false;
-var input_gloves = false;
+var input_meleeWeapon = false;
 
 if (global.input[myPlayerId] == K_INPUT_KEYBOARD)
 {
@@ -1014,7 +1054,7 @@ if (global.input[myPlayerId] == K_INPUT_KEYBOARD)
     
     if input_key_fire_pressed()
     {
-        input_gloves = true; // Pinkyy's gloves
+        input_meleeWeapon = true;
     }
     
     if input_key_fire()
@@ -1034,55 +1074,57 @@ else
     
     if (joy_rpos(joy) &gt; 0.7)
     {
-        input_gloves = true;
+        input_meleeWeapon = true;
         inputShield = true;
     }
     else inputShield = false;
 }
 
-if (!melee) &amp;&amp; (!throw)
-{
-    if (input_melee) || ( myGun == obj_gloves &amp;&amp; input_gloves )
+if (instance_exists(myGun)){
+    if (!melee) &amp;&amp; (!throw)
     {
-        melee = true;   
-        if (myGun == obj_gloves)
+        if (input_melee) || ( myGun.isMeleeWeapon &amp;&amp; input_meleeWeapon )
         {
-            audio_play(audio_emitter,false,1,sfx_gloves1,sfx_gloves2,sfx_gloves3,sfx_gloves4,sfx_gloves5,sfx_gloves6,sfx_gloves7);
+            melee = true;   
+            if (myGun.isMeleeWeapon)
+            {
+                audio_play(audio_emitter,false,1,myGun.swingSound1,myGun.swingSound2,myGun.swingSound3,myGun.swingSound4,myGun.swingSound5,myGun.swingSound6,myGun.swingSound7);
+            }
+            else audio_play(audio_emitter,false,1,sfx_melee);
         }
-        else audio_play(audio_emitter,false,1,sfx_melee);
     }
-}
-
-if (melee) &amp;&amp; (animation_current == 'melee')
-{
-    if (animation_index = melee_hit_frame)
+    
+    if (melee) &amp;&amp; (animation_current == 'melee')
     {
-        meleeArc = instance_create(x,y,fx_melee_arc);
-        meleeArc.owner = id;
-        meleeArc.damage = melee_damage;
-        
-        meleeArc.push_power = melee_push_power;
-        stamina -= melee_stamina_cost;
-        if stamina &lt; 0 stamina = 0;
-        
-        if (myGun == obj_gloves) 
+        if (animation_index = melee_hit_frame)
         {
-            meleeArc.damage = melee_damage_gloves;
-            meleeArc.push_power = melee_push_power_gloves;
-            meleeArc.sprite_index = spr_melee_gloves;
-            meleeArc.max_hits = 5;  
-        }  
-    }
-
-    if (animation_index &gt;= (animation_frames-1))
-    {
-        melee = false;
-        animation_priority = 0;
+            meleeArc = instance_create(x,y,fx_melee_arc);
+            meleeArc.owner = id;
+            meleeArc.damage = melee_damage;
+            
+            meleeArc.push_power = melee_push_power;
+            stamina -= melee_stamina_cost;
+            if stamina &lt; 0 stamina = 0;
+            
+            if (myGun.isMeleeWeapon) 
+            {
+                meleeArc.damage = myGun.damage;
+                meleeArc.max_hits = myGun.maxHits;  
+                meleeArc.push_power = myGun.pushPower;
+                meleeArc.sprite_index = myGun.meleeArcSprite;
+            }  
+        }
+    
+        if (animation_index &gt;= (animation_frames-1))
+        {
+            melee = false;
+            animation_priority = 0;
+        }
     }
 }
 
 //Rider's Dash attack
-
+    
 if (myChar == char_rider) &amp;&amp; (!instance_exists(riderDodgeAttack)) {
     if (dodging) {
         if (!riderDodgeAttack){
@@ -1096,9 +1138,6 @@ if (myChar == char_rider) &amp;&amp; (!instance_exists(riderDodgeAttack)) {
     }
     else riderDodgeAttack = noone;
 }
-
-
-
 
 </string>
           </argument>
@@ -1144,8 +1183,6 @@ else
 
 if ( (grenade_input) &amp;&amp; (!melee) &amp;&amp; (!throw) )
 {
-    if (global.character[myPlayerId] != char_pinky)
-    {
         if (global.grenades[myPlayerId])
         {
             throw = true;
@@ -1171,15 +1208,6 @@ if ( (grenade_input) &amp;&amp; (!melee) &amp;&amp; (!throw) )
             damage_fx = instance_create(x+spreadX,y+spreadY,fx_damage);
             damage_fx.damage = riderGrenadeCost;
         }
-    }
-    else{
-        //Pinky pinkyy grenade throw fail feedback
-        guiInfo = instance_create(x,y,gui_info);
-        guiInfo.colorMain = K_BETU_RED;
-        guiInfo.myString = loc_key("INFO_CANTUSEGRENADES");
-        guiInfo.owner = id;
-        audio_play(audio_emitter, false, 1, sfx_pickup_full);
-    }
 }
 
 
@@ -1308,7 +1336,7 @@ if (hp &lt;= 0)
     if (global.character[myPlayerId] == char_biu) corpse.sprite_index = spr_biu_death;
     if (global.character[myPlayerId] == char_punny) corpse.sprite_index = spr_punny_death;
     if (global.character[myPlayerId] == char_ass) corpse.sprite_index = spr_ass_death;
-    if (global.character[myPlayerId] == char_rider) corpse.sprite_index = spr_jimmy_death;
+    if (global.character[myPlayerId] == char_rider) corpse.sprite_index = spr_rider_death;
     instance_destroy();
 }
 else hp = round(hp);
@@ -1327,7 +1355,7 @@ if energy &lt; (energy_max+overshield)
     if energy_regen_time_current = energy_regen_time
     {
         myRecharge = instance_create(x,y,fx_shield_up);  
-        audio_play(audio_emitter,false,1,sfx_shield_regen_start); 
+        audio_play(audio_emitter,false,1,sfx_shield_regen_start);
         myRecharge.owner = id;
     }
     
@@ -1355,6 +1383,26 @@ if (!energy) &amp;&amp; (shield == true) &amp;&amp; (energy_max)
 }
 
 if (!energy_max) shield = false;
+
+if (superShield){
+    energy = energy_max+overshield;
+    shield = true;
+
+    if (!instance_exists(mySuperShieldFx)) {
+        mySuperShieldFx = instance_create(x,y,fx_superShield);
+        mySuperShieldFx.owner = id;
+        audio_play(audio_emitter,false,9,sfx_shield_regen_start);
+    }
+    
+    if (superShieldTimeCurrent &lt; superShieldTime) superShieldTimeCurrent++;
+    else{
+        superShieldTimeCurrent = 0;
+        superShieldTime = 0;
+        superShield = false;
+        if (instance_exists(mySuperShieldFx)) with (mySuperShieldFx){instance_destroy();}
+        instance_create(x,y,fx_explosion_shield);
+    }   
+}
 </string>
           </argument>
         </arguments>
@@ -1514,7 +1562,6 @@ if (global.relicDetected)
     
         animation_play('dig',0.15,an_clamp,99,3+2);
         audio_play_exclusive(audio_emitter,false,9,sfx_shovel1,sfx_shovel2,sfx_shovel3);
-        audio_play_exclusive(audio_emitter,false,9,sfx_dirt1,sfx_dirt2,sfx_dirt3,sfx_dirt4,sfx_dirt5);
         add_screen_shake(9,0,true);
         
         myDirtColor = global.dirtColor;

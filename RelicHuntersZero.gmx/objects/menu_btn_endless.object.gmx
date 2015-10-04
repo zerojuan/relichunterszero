@@ -28,7 +28,7 @@
             <string>///Button Config
 
 event_inherited();
-isAvailable = true;
+isAvailable = false;
 labelString = loc_key("MAINMENU_ENDLESS");
 
 
@@ -57,16 +57,13 @@ labelString = loc_key("MAINMENU_ENDLESS");
             <string>///Button Action
 event_inherited();
 
-//NOT YET:
-//if (global.unlockEndless) isAvailable = true;
+if (global.unlockEndless) isAvailable = true;
 
 if (executeAction)
 {
     global.gameMode = gamemode_endless;
     room_goto(room_charSelection);
 }
-
-show_debug_message("ENDLESS IS: "+string(loc_key("MAINMENU_ENDLESS")));
 </string>
           </argument>
         </arguments>

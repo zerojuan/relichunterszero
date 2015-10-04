@@ -30,6 +30,7 @@ event_inherited();
 
 image_speed = 0.2;
 image_xscale = -1;
+depth = -y;
 
 price = 0;
 
@@ -38,6 +39,10 @@ in_range = false;
 
 myPrompt = instance_create(x-42,y+30,fx_prompt_e);
 myPrompt.owner = id;
+
+name = loc_key("GUNNAR_INFO_POPUP");
+myInfo = instance_create(x,y,fx_info_pickup);
+myInfo.owner = id;
 
 myBalloon = noone;
 </string>
@@ -83,6 +88,14 @@ if instance_exists(activationClient)
                 global.bountyEndless -= price;
                 gun.weaponLevel++;
                 wantToActivate = false;
+                
+                //Achievements &amp; Stats
+                global.statTotalWeaponUpgrades++;
+                global.hasPurchasedAnything = true;
+                if (gun.weaponLevel == 3) achievement_give("ACHIEVEMENT_GUNNAR_3");
+                if (gun.weaponLevel == 9) achievement_give("ACHIEVEMENT_GUNNAR_9");
+                steam_set_stat_int("STAT_TOTAL_UPGRADES", steam_get_stat_int("STAT_TOTAL_UPGRADES") + 1  ); 
+                if (steam_get_stat_int("STAT_TOTAL_UPGRADES") &gt;= 360) achievement_give("ACHIEVEMENT_GUNNAR_360");
 
                 guiInfo = instance_create(activationClient.x,activationClient.y,gui_info);
                 guiInfo.myString = loc_key("GUNNAR_INFO_UPGRADED");;
@@ -100,13 +113,6 @@ if instance_exists(activationClient)
             }    
         }
     }
-}
-
-
-//Animation (TODO)
-/*if (in_range) blablabla
-else {
-    blablabla
 }
 </string>
           </argument>

@@ -30,6 +30,7 @@ event_inherited();
     playerName = "ACE";
     myChar = char_ass;
     
+    global.relic_rabbit_foot = 2; //&lt;-- Born lucky
     melee_damage = 75;
     
     energy_max = 30;

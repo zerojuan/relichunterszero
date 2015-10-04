@@ -33,6 +33,9 @@ audio_play_sound(sfx_dig_done,99,false);
 if (global.ambientSound) audio_play_sound(global.ambientSound,9,true);
 
 relic = noone;
+endlessRelic = noone;
+endlessWeapon = noone;
+
 itemSprite = spr_pineapple1;
 itemFrame = 14;
 itemAlpha = 1;
@@ -118,8 +121,31 @@ if (relic != noone)
     relic.announce.relicSprite2 = relic.relicSprite2;
     relic.announce.relicSprite2Draw = relic.relicSprite2Draw;
     relic.announce.relicSprite3 = relic.relicSprite3;
-    relic.announce.relicSprite3Draw = relic.relicSprite3Draw;     
+    relic.announce.relicSprite3Draw = relic.relicSprite3Draw;    
+    exit; 
 }
+
+if (endlessWeapon != noone)
+{
+    var weapon = instance_create(x,y,endlessWeapon);
+    var wPos = get_bbox_center(weapon);
+    weapon.x += x-wPos[0];
+    weapon.y += y-wPos[1];
+    exit;
+}
+
+if (endlessRelic != noone)
+{
+    var myRelic = instance_create(0,0,endlessRelic);
+    myRelic.toggle = true;
+    with (myRelic) {
+        event_perform(ev_step,ev_step_begin);
+        instance_destroy();
+    }
+    if (instance_exists(class_gui_dynamic_relic)) with (class_gui_dynamic_relic) timedActive = true;
+    exit;
+}
+
 </string>
           </argument>
         </arguments>

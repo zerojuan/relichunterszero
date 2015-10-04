@@ -22,6 +22,9 @@
     
     global.statRunTime = 0;
     
+    global.hasPurchasedAnything = false;
+    global.hacksOnThisRun = 0;
+    
     if (global.gameMode == gamemode_adventure)
     {
         global.ammo_light[1] = 120;
@@ -33,7 +36,6 @@
         global.ammo_medium[2] = 0;
         global.ammo_heavy[2] = 0;
         global.grenades[2] = 2;
-    
     }
     
     if (global.gameMode == gamemode_endless)
@@ -58,6 +60,8 @@
         global.endPriceTier_grenades = 0;
         global.endPriceTier_health = 0;
         global.endPriceTier_overshield = 0;
+        global.endPriceTier_revive = 0;
+        global.endPriceTier_hack = 0;
         
         global.endTierSlot1 = 1;
         global.endTierSlot2 = 1;
@@ -65,6 +69,8 @@
         global.endTierItem1 = noone;
         global.endTierItem2 = noone;
         global.endTierItem3 = noone;
+        
+        global.relicChanceBonus = 0;
         
         //Challenge list clear
         if (is_undefined(global.challengeList)) global.challengeList = ds_list_create();
@@ -95,7 +101,9 @@
     global.challengeJaws = 0;
     global.challengeCountdown = 0;
     
-    //Reset Relic Selection
+//Reset Relic Selection
+if (global.gameMode == gamemode_endless)
+{
     global.relic_slot[1] = '';
     global.relic_slot[2] = '';
     global.relic_slot[3] = '';
@@ -114,4 +122,5 @@
     global.relic_rabbit_foot = 0;
     global.relic_midnight_meal = 0;
     global.relic_yottabyte_processor = 0;
+}
     

@@ -34,14 +34,13 @@ radiusAccel = 0.3;
 radiusSpeedMax = 8;
 radiusSpeed = 0;
 
-
 radius = radiusStart;
 
 radiusAlpha = 1;
 radiusAlphaSpeed = 0.025;
 
 damage = 200;
-push_power = 10;
+push_power = 20;
 
 damage_list = ds_list_create();
 hit_list = ds_list_create();
@@ -146,6 +145,10 @@ if (image_index &gt;= trigger_frame) &amp;&amp; (image_index &lt;= end_frame) &a
             
             if (poor_guy.shield)
             {
+                if (!is_enemy){
+                    if (poor_guy.superShield) damage = 0;
+                }
+                
                 if damage &gt; poor_guy.energy
                 {
                     damage -= poor_guy.energy;
@@ -195,21 +198,6 @@ if (image_index &gt;= trigger_frame) &amp;&amp; (image_index &lt;= end_frame) &a
         poor_object.shake_direction = irandom(360);
         poor_object.shake += 4;
     }
-}
-else
-{
-    /*
-    poor_guy = collision_circle(x,y,radiusFinal,faction_player,false,true);
-    if (!poor_guy) || (ds_list_find_index(hit_list,poor_guy)) 
-    {
-        poor_guy = collision_circle(x,y,radiusFinal,class_enemy,false,true);
-    }
-    
-    if (poor_guy)
-    {
-        poor_guy.hit_taken = true;
-        ds_list_add(hit_list,poor_guy);
-    }*/
 }
 </string>
           </argument>

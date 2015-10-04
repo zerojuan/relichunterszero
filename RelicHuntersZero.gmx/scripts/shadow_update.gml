@@ -125,5 +125,3 @@ if (global.shadows)
     surface_reset_target();
 }
 
-
-

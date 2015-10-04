@@ -31,6 +31,7 @@
 randomize();
 joy_init();
 
+
 global.gameOver = false;
 global.relicDetected = false;
 
@@ -251,6 +252,7 @@ global.devPotionRegenTime = room_speed*0.75;
 global.watchfulEyePickupBonus = 1.5;
 global.relicHpBonus = 1;
 global.relicEnergyBonus = 1;
+awarded4RelicsAchievement = false;
 
 //Audio
 global.falloffMainDist = 1280;
@@ -283,6 +285,11 @@ display_mouse_set(window_get_width() / 2, window_get_height() / 2);
 //Low Performance Detection
 global.lowPerfTime = room_speed*4.2;
 global.lowPerfTimeCurrent = 0;
+
+debug_forceLevelExit = false;
+
+///Enemy Tracker
+global.edgeTrackEnemyList = noone;
 
 </string>
           </argument>
@@ -372,6 +379,40 @@ if (global.gameMode == gamemode_endless)
     global.endPrice_health[7] = 500;
     global.endPrice_health[8] = 600;
     global.endPrice_health[9] = 700;
+    
+    global.endPrice_revive[0] = 500;
+    global.endPrice_revive[1] = 2000;
+    global.endPrice_revive[2] = 3000;
+    global.endPrice_revive[3] = 4000;
+    global.endPrice_revive[4] = 5000;
+    global.endPrice_revive[5] = 6000;
+    global.endPrice_revive[6] = 7000;
+    global.endPrice_revive[7] = 8000;
+    global.endPrice_revive[8] = 9000;
+    global.endPrice_revive[9] = 9999;
+    
+    global.endPrice_hackCommon[0] = 500;
+    global.endPrice_hackCommon[1] = 1200;
+    global.endPrice_hackCommon[2] = 1600;
+    global.endPrice_hackCommon[3] = 3000;
+    global.endPrice_hackCommon[4] = 3300;
+    global.endPrice_hackCommon[5] = 4000;
+    global.endPrice_hackCommon[6] = 5000;
+    global.endPrice_hackCommon[7] = 6500;
+    global.endPrice_hackCommon[8] = 8000;
+    global.endPrice_hackCommon[9] = 9999;
+    
+    global.endPrice_hackUnique[0] = 1000;
+    global.endPrice_hackUnique[1] = 2400;
+    global.endPrice_hackUnique[2] = 3200;
+    global.endPrice_hackUnique[3] = 5000;
+    global.endPrice_hackUnique[4] = 7000;
+    global.endPrice_hackUnique[5] = 8500;
+    global.endPrice_hackUnique[6] = 9999;
+    global.endPrice_hackUnique[7] = 9999;
+    global.endPrice_hackUnique[8] = 9999;
+    global.endPrice_hackUnique[9] = 9999;
+    
     
     //Gunnar
     global.price_weaponUpgrade[0] = 500;
@@ -740,72 +781,86 @@ if (global.gameMode == gamemode_endless) &amp;&amp; (ds_exists(global.challengeL
         room == level2_3 ||
         room == level3_2 ||
         room == level4_1 ||
-        room == level4_3
-    ){
+        room == level4_3 ||
+        (global.currentLoop &gt;= 3 &amp;&amp; room != room_endShop)
+        )
+    {
         var stringChallenge = "";
         var stringDescritpion = "";
         var listName = "";
         var chUnique = false;
         
-        var uniqueChallengeChance = random(1);
-        if (uniqueChallengeChance &lt;= 0.35){
-            chUnique = true;
-            var randomChallenge = irandom(9);
-            switch (randomChallenge){
-                case 0 : if (ds_list_find_index(global.challengeList,"CHALLENGE_HUNGER") == -1) { 
-                    global.challengeHunger = true; stringChallenge="CHALLENGE_HUNGER"; stringDescritpion="CHALLENGE_HUNGER_DESC"; listName="CHALLENGE_HUNGER";
-                    } break;
+        if (global.currentLoop &lt; 2)
+        {
+            var uniqueChallengeChance = random(1);
+            if (uniqueChallengeChance &lt;= 0.35){
+                chUnique = true;
+                var randomChallenge = irandom(9);
+                switch (randomChallenge){
+                    case 0 : if (ds_list_find_index(global.challengeList,"CHALLENGE_HUNGER") == -1) { 
+                        global.challengeHunger = true; stringChallenge="CHALLENGE_HUNGER"; stringDescritpion="CHALLENGE_HUNGER_DESC"; listName="CHALLENGE_HUNGER";
+                        } break;
+                        
+                    case 1 : if (ds_list_find_index(global.challengeList,"CHALLENGE_THIRST") == -1) { 
+                        global.challengeThirst = true; stringChallenge="CHALLENGE_THIRST"; stringDescritpion="CHALLENGE_THIRST_DESC"; listName="CHALLENGE_THIRST";
+                        } break;
                     
-                case 1 : if (ds_list_find_index(global.challengeList,"CHALLENGE_THIRST") == -1) { 
-                    global.challengeThirst = true; stringChallenge="CHALLENGE_THIRST"; stringDescritpion="CHALLENGE_THIRST_DESC"; listName="CHALLENGE_THIRST";
-                    } break;
-                
-                case 2 : if (ds_list_find_index(global.challengeList,"CHALLENGE_OVERCHARGE") == -1) { 
-                    global.challengeOvercharge = true; stringChallenge="CHALLENGE_OVERCHARGE"; stringDescritpion="CHALLENGE_OVERCHARGE_DESC"; listName="CHALLENGE_OVERCHARGE";
-                    } break;
+                    case 2 : if (ds_list_find_index(global.challengeList,"CHALLENGE_OVERCHARGE") == -1) { 
+                        global.challengeOvercharge = true; stringChallenge="CHALLENGE_OVERCHARGE"; stringDescritpion="CHALLENGE_OVERCHARGE_DESC"; listName="CHALLENGE_OVERCHARGE";
+                        } break;
+                        
+                    case 3 : if (ds_list_find_index(global.challengeList,"CHALLENGE_MEDIEVAL") == -1) { 
+                        global.challengeMedieval = true; stringChallenge="CHALLENGE_MEDIEVAL"; stringDescritpion="CHALLENGE_MEDIEVAL_DESC"; listName="CHALLENGE_MEDIEVAL";
+                        } break;
+                        
+                    case 4 : if (ds_list_find_index(global.challengeList,"CHALLENGE_SUPRESSOR") == -1) { 
+                        global.challengeSupressor = true; stringChallenge="CHALLENGE_SUPRESSOR"; stringDescritpion="CHALLENGE_SUPRESSOR_DESC"; listName="CHALLENGE_SUPRESSOR";
+                        } break;
                     
-                case 3 : if (ds_list_find_index(global.challengeList,"CHALLENGE_MEDIEVAL") == -1) { 
-                    global.challengeMedieval = true; stringChallenge="CHALLENGE_MEDIEVAL"; stringDescritpion="CHALLENGE_MEDIEVAL_DESC"; listName="CHALLENGE_MEDIEVAL";
-                    } break;
+                    case 5 : if (ds_list_find_index(global.challengeList,"CHALLENGE_CATAPULT") == -1) { 
+                        global.challengeCatapult = true; stringChallenge="CHALLENGE_CATAPULT"; stringDescritpion="CHALLENGE_CATAPULT_DESC"; listName="CHALLENGE_CATAPULT";
+                        } break;
+                        
+                    case 6 : if (ds_list_find_index(global.challengeList,"CHALLENGE_DUCANWEAPONS") == -1) { 
+                        global.challengeDucanWeapons = true; stringChallenge="CHALLENGE_DUCANWEAPONS"; stringDescritpion="CHALLENGE_DUCANWEAPONS_DESC"; listName="CHALLENGE_DUCANWEAPONS";
+                        } break;
+                      
+                    case 7 : if (ds_list_find_index(global.challengeList,"CHALLENGE_JAWS") == -1) { 
+                        global.challengeJaws = true; stringChallenge="CHALLENGE_JAWS"; stringDescritpion="CHALLENGE_JAWS_DESC"; listName="CHALLENGE_JAWS";
+                        } break;
                     
-                case 4 : if (ds_list_find_index(global.challengeList,"CHALLENGE_SUPRESSOR") == -1) { 
-                    global.challengeSupressor = true; stringChallenge="CHALLENGE_SUPRESSOR"; stringDescritpion="CHALLENGE_SUPRESSOR_DESC"; listName="CHALLENGE_SUPRESSOR";
-                    } break;
-                
-                case 5 : if (ds_list_find_index(global.challengeList,"CHALLENGE_CATAPULT") == -1) { 
-                    global.challengeCatapult = true; stringChallenge="CHALLENGE_CATAPULT"; stringDescritpion="CHALLENGE_CATAPULT_DESC"; listName="CHALLENGE_CATAPULT";
-                    } break;
-                    
-                case 6 : if (ds_list_find_index(global.challengeList,"CHALLENGE_DUCANWEAPONS") == -1) { 
-                    global.challengeDucanWeapons = true; stringChallenge="CHALLENGE_DUCANWEAPONS"; stringDescritpion="CHALLENGE_DUCANWEAPONS_DESC"; listName="CHALLENGE_DUCANWEAPONS";
-                    } break;
-                  
-                case 7 : if (ds_list_find_index(global.challengeList,"CHALLENGE_JAWS") == -1) { 
-                    global.challengeJaws = true; stringChallenge="CHALLENGE_JAWS"; stringDescritpion="CHALLENGE_JAWS_DESC"; listName="CHALLENGE_JAWS";
-                    } break;
-                
-                case 8 : if (ds_list_find_index(global.challengeList,"CHALLENGE_BLOODLUST") == -1) { 
-                    global.challengeBloodlust = true; stringChallenge="CHALLENGE_BLOODLUST"; stringDescritpion="CHALLENGE_BLOODLUST_DESC"; listName="CHALLENGE_BLOODLUST";
-                    } break;
-                    
-                case 9 : if (ds_list_find_index(global.challengeList,"CHALLENGE_HEAVYBURDEN") == -1) { 
-                    global.challengeHeavyBurden = true; stringChallenge="CHALLENGE_HEAVYBURDEN"; stringDescritpion="CHALLENGE_HEAVYBURDEN_DESC"; listName="CHALLENGE_HEAVYBURDEN";
-                    } break;
+                    case 8 : if (ds_list_find_index(global.challengeList,"CHALLENGE_BLOODLUST") == -1) { 
+                        global.challengeBloodlust = true; stringChallenge="CHALLENGE_BLOODLUST"; stringDescritpion="CHALLENGE_BLOODLUST_DESC"; listName="CHALLENGE_BLOODLUST";
+                        } break;
+                        
+                    case 9 : if (ds_list_find_index(global.challengeList,"CHALLENGE_HEAVYBURDEN") == -1) { 
+                        global.challengeHeavyBurden = true; stringChallenge="CHALLENGE_HEAVYBURDEN"; stringDescritpion="CHALLENGE_HEAVYBURDEN_DESC"; listName="CHALLENGE_HEAVYBURDEN";
+                        } break;
+                }
+            }
+            
+            //No luck? Roll the common ones
+            if (stringChallenge == "") {
+                var randomChallenge = irandom(5);
+                switch (randomChallenge){
+                    case 0 : global.challengeSteroids++; stringChallenge="CHALLENGE_STEROIDS"; stringDescritpion="CHALLENGE_STEROIDS_DESC"; listName="CHALLENGE_STEROIDS"; break;
+                    case 1 : global.challengeWanted++; stringChallenge="CHALLENGE_WANTED"; stringDescritpion="CHALLENGE_WANTED_DESC"; listName="CHALLENGE_WANTED"; break;
+                    case 2 : global.challengeHighTech++; stringChallenge="CHALLENGE_HIGHTECH"; stringDescritpion="CHALLENGE_HIGHTECH_DESC"; listName="CHALLENGE_HIGHTECH"; break;
+                    case 3 : global.challengeLightFocus++; stringChallenge="CHALLENGE_LIGHTFOCUS"; stringDescritpion="CHALLENGE_LIGHTFOCUS_DESC"; listName="CHALLENGE_LIGHTFOCUS"; break;
+                    case 4 : global.challengeMediumFocus++; stringChallenge="CHALLENGE_MEDIUMFOCUS"; stringDescritpion="CHALLENGE_MEDIUMFOCUS_DESC"; listName="CHALLENGE_MEDIUMFOCUS"; break;
+                    case 5 : global.challengeHeavyFocus++; stringChallenge="CHALLENGE_HEAVYFOCUS"; stringDescritpion="CHALLENGE_HEAVYFOCUS_DESC"; listName="CHALLENGE_HEAVYFOCUS"; break;
+                }
             }
         }
-        
-        //No luck? Roll the common ones
-        if (stringChallenge == "") {
-            var randomChallenge = irandom(5);
+        else{
+            var randomChallenge = irandom(2);
             switch (randomChallenge){
                 case 0 : global.challengeSteroids++; stringChallenge="CHALLENGE_STEROIDS"; stringDescritpion="CHALLENGE_STEROIDS_DESC"; listName="CHALLENGE_STEROIDS"; break;
                 case 1 : global.challengeWanted++; stringChallenge="CHALLENGE_WANTED"; stringDescritpion="CHALLENGE_WANTED_DESC"; listName="CHALLENGE_WANTED"; break;
                 case 2 : global.challengeHighTech++; stringChallenge="CHALLENGE_HIGHTECH"; stringDescritpion="CHALLENGE_HIGHTECH_DESC"; listName="CHALLENGE_HIGHTECH"; break;
-                case 3 : global.challengeLightFocus++; stringChallenge="CHALLENGE_LIGHTFOCUS"; stringDescritpion="CHALLENGE_LIGHTFOCUS_DESC"; listName="CHALLENGE_LIGHTFOCUS"; break;
-                case 4 : global.challengeMediumFocus++; stringChallenge="CHALLENGE_MEDIUMFOCUS"; stringDescritpion="CHALLENGE_MEDIUMFOCUS_DESC"; listName="CHALLENGE_MEDIUMFOCUS"; break;
-                case 5 : global.challengeHeavyFocus++; stringChallenge="CHALLENGE_HEAVYFOCUS"; stringDescritpion="CHALLENGE_HEAVYFOCUS"; listName="CHALLENGE_HEAVYFOCUS"; break;
             }
         }
+        
         
         if (listName != "") ds_list_add(global.challengeList, listName);
         
@@ -830,8 +885,8 @@ if (global.gameMode == gamemode_endless) &amp;&amp; (ds_exists(global.challengeL
     global.challengeMedievalPenalty = 0.4;
     global.challengeMedievalBonus = 1;
     global.challengeCatapultMultiplier = 3;
-    global.challengeHeavyBurdenPenalty = 0.8;
-    global.challengeBloodlustRate = 2; //Im applying this to the fire rate at class_gun_enemy
+    global.challengeHeavyBurdenPenalty = 0.55;
+    global.challengeBloodlustRate = 1.5; //Im applying this to the fire rate at class_gun_enemy
     global.challengeDucanWeaponsSpeed = 1.2;
     
 //Apply these right here, right now
@@ -1341,11 +1396,11 @@ if (!level_built)
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Level Exit
+            <string>///Level Exit + Relic Detected
 
 if (!(room == room_start)) &amp;&amp; (!(room == room_tutorial)) &amp;&amp; (!(room == room_shop)) &amp;&amp; (!(room == room_boss)) &amp;&amp; (!(room == room_endShop))
 {
-    if (!instance_exists(class_enemy)) &amp;&amp; (!instance_exists(obj_kamikazelite_flying)) &amp;&amp; (instance_exists(class_player)) &amp;&amp; (!level_end)
+    if ((!instance_exists(class_enemy)) &amp;&amp; (!instance_exists(obj_kamikazelite_flying)) &amp;&amp; (instance_exists(class_player)) &amp;&amp; (!level_end)) || (debug_forceLevelExit &amp;&amp; !level_end)
     {
         //Instantiates Ass
         var tries;
@@ -1390,7 +1445,16 @@ if (!(room == room_start)) &amp;&amp; (!(room == room_tutorial)) &amp;&amp; (!(r
                     playerSpawned.myPlayerId = p;
                     
                     //Reset weapons and HP
-                    char_state_initial(); //this also sets playerAlive to true!
+                    global.playerAlive[p] = true;
+                    global.weapon1[p] = noone;
+                    global.weapon2[p] = noone;
+                    global.weapon1Level[p] = 0;
+                    global.weapon2Level[p] = 0;
+                    global.hp[p] = 999999;
+                    global.overshield[p] = 0;
+                    global.currentlyEquippedWeapon[p] = 0;
+                    global.grenades[p] = 2;
+                    
                     with (playerSpawned) event_perform(ev_other,ev_user0);
                     
                     playerSpawned.hp = playerSpawned.hp_max * global.reviveHealth;
@@ -1470,7 +1534,67 @@ if (!(room == room_start)) &amp;&amp; (!(room == room_tutorial)) &amp;&amp; (!(r
                 
                 var relicDig = instance_create(relicSpawnX,relicSpawnY,obj_digSpot);
                 relicDig.myItem = spawnRelic;
-            } 
+            }
+        }
+        
+        if (global.gameMode == gamemode_endless)
+        {
+            global.dirtColor = c_white;
+            
+            //Treasure Chance
+            var relicChance = -1;
+            if (room==level1_1) || (room==level1_2) || (room==level1_3) { relicChance = 0.25 + global.relicChanceBonus;    global.dirtColor = make_color_rgb(183,137,49); }
+            if (room==level2_1) || (room==level2_2) || (room==level2_3) { relicChance = 0.2 + global.relicChanceBonus;    global.dirtColor = make_color_rgb(111,197,148); }
+            if (room==level3_1) || (room==level3_2) || (room==level3_3) { relicChance = 0.2 + global.relicChanceBonus;   global.dirtColor = make_color_rgb(74,136,192); }
+            if (room==level4_1) || (room==level4_2) || (room==level4_3) { relicChance = 0.2 + global.relicChanceBonus;   global.dirtColor = make_color_rgb(159,55,60); }
+            relicChance -= 0.2 * global.currentLoop
+            if (global.relic_rabbit_foot == 2) relicChance += 0.2;
+            
+            if (random(1) &lt;= relicChance)
+            {
+                global.relicChanceBonus = -0.15;
+ 
+                //Define object to spawn
+                var spawnObject = noone;               
+                spawnObject = obj_chestRegular // &lt;-- one day this will check chances for Chest types, teleporter pad, slot machine and sacrifice table
+                
+                //Stop here if there is no object to spawn
+                if (spawnObject == noone) exit;
+                
+                //Randomize Dig Site Position
+                if (instance_exists(obj_spawn_topLeft)) &amp;&amp; (instance_exists(obj_spawn_botRight))
+                {
+                    var validPosition = false;
+                    var relicSpawnX, relicSpawnY;
+                    
+                    while (!validPosition)
+                    {
+                        relicSpawnX = irandom_range( obj_spawn_topLeft.x , obj_spawn_botRight.x );
+                        relicSpawnY = irandom_range( obj_spawn_topLeft.y , obj_spawn_botRight.y );
+                        if (!collision_circle(relicSpawnX,relicSpawnY,42,obj_limit,false,true)) validPosition = true;
+                    }
+                }
+                else exit;
+                
+                //Spawn
+                audio_stop_all();
+                audio_play_sound(bgm_dig,99,true);
+                volume_update();
+                audio_play_sound(sfx_relic_on,00,false); //&lt;-- Relic Detected sound will go here someday
+                
+                global.relicDetected = true;
+                var announceRelic = instance_create(x,y,fx_bigMessage);
+                announceRelic.textBig = loc_key("HUD_TREASURE_DETECT");
+                announceRelic.textBigColor = K_BETU_RED;
+                if (global.input[1] == K_INPUT_KEYBOARD) announceRelic.textSmall = loc_key("HUD_RELIC_DETECT_KEY");
+                else announceRelic.textSmall = loc_key("HUD_RELIC_DETECT_JOY");
+                
+                var relicDig = instance_create(relicSpawnX,relicSpawnY,obj_digSpot);
+                relicDig.myItem = spawnObject;
+            }
+            else{
+                global.relicChanceBonus += 0.12;
+            }
         }
     }
 }
@@ -1534,6 +1658,8 @@ if (global.level_complete)
     if (room == room_shop) || (room == room_start) || (room == room_endShop)
     {
         //Test boss: room_goto(room_boss); exit;  
+        //Test halloween: room_goto(levelHalloween_1); exit;  
+        
         
         if (global.stage_current == 0) room_goto(level1_1);
         else if (global.stage_current == 1) room_goto(level2_1);
@@ -1577,6 +1703,9 @@ if (global.level_complete)
         else if (global.gameMode == gamemode_endless)
         {
             global.currentLoop++;
+            global.statTotalLoops++;
+            steam_set_stat_int("STAT_TOTAL_LOOPS", steam_get_stat_int("STAT_TOTAL_LOOPS") + 1  ); 
+            if (steam_get_stat_int("STAT_TOTAL_LOOPS") &gt;= 50) achievement_give("ACHIEVEMENT_LOOPS_50");
             global.stage_current = 0;
             save_all();
             room_goto(room_endShop);
@@ -1738,11 +1867,34 @@ global.count_casings = instance_number(fx_casing) + instance_number(fx_blood);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///DEBUG COMMANDS
-
-
+            <string>///DEBUG COMMANDS   
+    
 if (debug_mode)
 {
+       
+    if keyboard_check_pressed(ord('M')) global.currentLoop++;
+
+//Debug Endless Bounty
+    if keyboard_check_pressed(ord('B')) global.bountyEndless += 500;
+    
+//Debug: Kill Everything
+    if keyboard_check_pressed(vk_f9)
+    {
+        if instance_exists(class_enemy)
+        {
+            with (class_enemy)
+            {
+                instance_destroy();
+            }
+        }
+    }
+       
+    //Debug: Stage Clear
+    if keyboard_check_pressed(vk_f10)
+    {
+        debug_forceLevelExit = true;
+    }
+    
     //Debug: Kill Everything
     if keyboard_check_pressed(vk_f9)
     {
@@ -1755,8 +1907,6 @@ if (debug_mode)
         }
     }
     
-    //Debug Endless Bounty
-    if keyboard_check_pressed(ord('M')) global.bountyEndless += 500;
     
 
     ///Mute the Music
@@ -1807,13 +1957,6 @@ if (debug_mode)
     
     
     
-    //Debug: Erase Save File
-    if keyboard_check_pressed(vk_f10)
-    {
-        file_delete(working_directory + "\saveData.ini");
-        game_restart();
-    }
-    
     //Debug: Toggle Hud, comment this to deactivate
     main_hud_alpha = 0;
 
@@ -1841,6 +1984,24 @@ if (debug_mode)
         steam_clear_achievement("ACHIEVEMENT_BEATGAMECOOP"); //set by Boss corpse
         steam_clear_achievement("ACHIEVEMENT_ULTIMATECOOP");   //set by Boss corpse
         steam_clear_achievement("ACHIEVEMENT_FIRSTDIG"); //set by digSpot
+        
+        steam_clear_achievement("ACHIEVEMENT_FIRSTLOOP"); //set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_JIMMY"); //set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_PINKYY");//set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_RAFF");//set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_BIU");//set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_PUNNY");//set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP2_ACE");//set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_GUNNAR_3"); //set by Gunnar
+        steam_clear_achievement("ACHIEVEMENT_GUNNAR_9"); //set by Gunnar
+        steam_clear_achievement("ACHIEVEMENT_SAE_3"); // set by class_hack
+        steam_clear_achievement("ACHIEVEMENT_RELICWEAPONS"); //set by class_player
+        steam_clear_achievement("ACHIEVEMENT_LOOPS_50"); //set when I do currentLoop++ on controller_main
+        steam_clear_achievement("ACHIEVEMENT_GUNNAR_360"); //set by Gunnar
+        steam_clear_achievement("ACHIEVEMENT_SAE_200"); // set by class_hack
+        steam_clear_achievement("ACHIEVEMENT_LOOP_NOBUY"); //set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_LOOP3"); //set by Boss corpse
+        steam_clear_achievement("ACHIEVEMENT_RELICS_4"); //set by controller_main Step event
     }
 }
 </string>
@@ -2014,8 +2175,26 @@ if (global.statKilledByBoss &gt;= 5) &amp;&amp; (!global.unlockAss)
     announce.hunterUnlockSprite = spr_hud_face_ass;
 }
 
-
-
+if (global.gameMode == gamemode_endless) &amp;&amp; (!awarded4RelicsAchievement) {
+    var countRelics = 0;
+    if (global.relic_morning_star) countRelics++;
+    if (global.relic_pineapple_pie) countRelics++;
+    if (global.relic_rabbit_foot) countRelics++;
+    if (global.relic_midnight_meal) countRelics++;
+    if (global.relic_yottabyte_processor) countRelics++;
+    if (global.relic_alcoholic_carrot) countRelics++;
+    if (global.relic_yottabyte_drive)  countRelics++;
+    if (global.relic_pineapple_pudding)  countRelics++;
+    if (global.relic_infinity_battery)   countRelics++;
+    if (global.relic_crystal_bacon) countRelics++;
+    if (global.relic_midnight_beer) countRelics++;
+    if (global.relic_watchful_eye) countRelics++;
+    if (global.relic_dev_potion) countRelics++;
+    if (countRelics &gt;= 4) {
+        achievement_give("ACHIEVEMENT_RELICS_4");
+        awarded4RelicsAchievement = true;
+    }
+}
 
 </string>
           </argument>
@@ -2048,6 +2227,55 @@ if (timeCounter &gt;= room_speed)
     
     if (!global.gameOver) &amp;&amp; (!global.pauseMenu) global.statRunTime++;
 }
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Edge Tracking for Enemies
+
+var maxEdgeTrackingDistance = 1000;
+
+if (!ds_exists(global.edgeTrackEnemyList,ds_type_list)) global.edgeTrackEnemyList = ds_list_create();
+ds_list_clear(global.edgeTrackEnemyList);
+
+if (instance_exists(class_enemy))
+{
+    var enemyCount = instance_number(class_enemy);
+    for (var i=0; i&lt;enemyCount; i++)
+    {
+        var enemy = instance_find(class_enemy,i);
+        if (instance_exists(enemy)) 
+        {
+            if (!on_screen_offset(enemy.x,enemy.y,32)) 
+            {
+                var enemyDist = abs(point_distance(view_xview[0]+(view_wview[0]/2),view_yview[0]+(view_hview[0]/2),enemy.x,enemy.y));
+                if (enemyDist &lt;= maxEdgeTrackingDistance) 
+                {
+                    ds_list_add(global.edgeTrackEnemyList,enemy);
+                }
+            }
+        }
+    }
+}
+
+
+
 </string>
           </argument>
         </arguments>
@@ -2213,6 +2441,7 @@ while (p &lt;= global.playerCount)
         var charLifeColor = make_color_rgb(184,49,35);
         var charShieldColor = make_color_rgb(50,133,158);
         if (curPlayer.overshield) &amp;&amp; (energy &gt; curPlayer.energy_max) charShieldColor = make_color_rgb(86,216,255);
+        if (curPlayer.superShield) charShieldColor = K_BETU_ORANGE;
         var charBarDelaySpeed = 0.008;
         var charBarDelayTime = room_speed*0.6;
         
@@ -2382,8 +2611,6 @@ while (p &lt;= global.playerCount)
         }
         
         //Grenades
-        if (global.character[playerId] != char_pinky)
-        {
             var grenadesVerSpacing = 30;
             var grenadesHorSpacing = 25;
             var grenadesHorOrientation = 1;
@@ -2415,7 +2642,6 @@ while (p &lt;= global.playerCount)
                     grDrawCount = 0;
                 }
             }
-        }
         
         //gui_score Objects
         if instance_exists(gui_score)
@@ -2660,7 +2886,7 @@ draw_set_font(global.font_numberMedium);
 draw_set_halign(fa_center);
 draw_set_valign(fa_center);
 var relicTextSep = 30;
-var relicTextWidth = 100;
+var relicTextWidth = 132;
 
 if (instance_exists(gui_dynamic_relic1)) 
 {
@@ -2704,7 +2930,7 @@ if (global.pauseMenu) &amp;&amp; (global.gameMode == gamemode_endless)
             var challenge = ds_list_find_value(global.challengeList,i);
             
             var chSprite = spr_challengeUnique;
-            if (challenge == "CHALLENGE_STEROIDS") || (challenge == "CHALLENGE_WANTED") || (challenge == "CHALLENGE_LIGHTFOCUS") || 
+            if (challenge == "CHALLENGE_STEROIDS") || (challenge == "CHALLENGE_WANTED") || (challenge == "CHALLENGE_LIGHTFOCUS") || (challenge == "CHALLENGE_HIGHTECH") ||
             (challenge == "CHALLENGE_MEDIUMFOCUS") || (challenge == "CHALLENGE_HEAVYFOCUS") || (challenge == "CHALLENGE_REINFORCEMENTS"){
                     chSprite = spr_challengeCommon;
             }
@@ -2774,13 +3000,18 @@ if (global.gameOver)
     //Gameplay Hints
     if (gameOverHint != '')
     {
-        var hintY = height*0.6;
+        var hintBoxWidth = 740;
+        var hintBoxHeight = 80;
+        var hintVOffset = 15;
+        var hintY = height*0.7;
         var hintString = loc_key("TIPS_TITLE") + ": " + gameOverHint;
         
+        draw_set_colour(c_white);
+        draw_rectangle(gameOverX-(hintBoxWidth/2), hintY-(hintBoxHeight/2)+hintVOffset, gameOverX+(hintBoxWidth/2), hintY+(hintBoxHeight/2)+hintVOffset,false);
         draw_set_font(global.font_numberSmall);
         draw_set_colour(K_BETU_RED);
         
-        draw_text_ext(gameOverX, hintY, hintString, 20, 720);
+        draw_text_ext(gameOverX, hintY, hintString, 24, 720);
     }
 }
 
@@ -2817,10 +3048,19 @@ if (instance_exists(gui_info_lowPerformance))
 }
 
 
+
+
 draw_set_alpha(1);
 surface_reset_target();
 var surfaceXScale = window_get_width()/1920;
 var surfaceYScale = window_get_height()/1080;
+
+if (global.gameOver){ //Game Over Base Overlay
+    draw_set_alpha(0.42);
+    draw_set_colour(c_black);
+    draw_rectangle(0,0,width,height,false);
+    draw_set_alpha(1);
+}
 if (surface_exists(guiSurface)) draw_surface_ext(guiSurface, 0, 0, surfaceXScale, surfaceYScale, 0, c_white, 1);
 
 </string>
@@ -3056,6 +3296,52 @@ if (!global.pauseMenu) &amp;&amp; (!global.gameOver) &amp;&amp; (instance_exists
             if global.crosshair_scale[p] &gt; 1
             {
                 global.crosshair_scale[p] -= 0.05;
+            }
+        }
+    }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Edge Tracking Enemies
+
+if (ds_exists(global.edgeTrackEnemyList,ds_type_list)) &amp;&amp; (!global.pauseMenu) &amp;&amp; (!global.gameOver) &amp;&amp; (instance_exists(class_player))
+{
+    if (!ds_list_empty(global.edgeTrackEnemyList)) 
+    {
+        for (var i=0; i&lt;ds_list_size(global.edgeTrackEnemyList); i++)
+        {
+            var trackee = ds_list_find_value(global.edgeTrackEnemyList,i);
+            if (instance_exists(trackee))
+            {
+                var trackX, trackY;
+                
+                if (trackee.x &gt;= view_xview[0]) trackX = min(view_xview[0]+view_wview[0], trackee.x);
+                else trackX = max(view_xview[0], trackee.x);
+                
+                if (trackee.y &gt;= view_yview[0]) trackY = min(view_yview[0]+view_hview[0], trackee.y);
+                else trackY = max(view_yview[0], trackee.y);
+                
+                var trackDir = point_direction(trackX, trackY, trackee.x, trackee.y);
+                
+                draw_sprite_ext(spr_edgeTrackEnemy,0,trackX,trackY,0.5,0.5,trackDir,c_white,1);
             }
         }
     }
